@@ -1,35 +1,6 @@
-[build]
-  command = "npm run build"
-  publish = ".next"
+# Let Netlify auto-detect Next.js and handle everything
+# Just keep security headers
 
-[build.environment]
-  NODE_VERSION = "18.19.0"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
-
-[functions]
-  node_bundler = "esbuild"
-
-# Redirect all requests to Next.js
-[[redirects]]
-  from = "/*"
-  to = "/.netlify/functions/___netlify-handler"
-  status = 200
-
-# Handle API routes
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/___netlify-handler"
-  status = 200
-
-# Handle v2 routes
-[[redirects]]
-  from = "/v2/*"
-  to = "/.netlify/functions/___netlify-handler"
-  status = 200
-
-# Security headers
 [[headers]]
   for = "/*"
   [headers.values]

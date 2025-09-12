@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Optimize for Netlify deployment
-  output: 'standalone',
+  // Let Netlify handle everything automatically
+  // Just keep essential optimizations
 
   // Enable experimental features for better performance
   experimental: {
@@ -12,14 +12,6 @@ const nextConfig: NextConfig = {
   // Image optimization for Netlify
   images: {
     unoptimized: true,
-  },
-
-  // Ensure proper trailing slash handling
-  trailingSlash: false,
-
-  // Environment variables validation
-  env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
 };
 
