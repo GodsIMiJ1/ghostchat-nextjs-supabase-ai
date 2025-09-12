@@ -110,16 +110,24 @@ export default function Home() {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-2">GhostChat</h1>
-            <p className="text-gray-600">
+            <p className="text-gray-600 mb-4">
               A production-ready AI chat template using Next.js, Supabase, and OpenAI
             </p>
+            <div className="flex justify-center">
+              <Link
+                href="/v2"
+                className="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+              >
+                👻 Try v2.0 Local-First (No Auth Required)
+              </Link>
+            </div>
           </div>
 
           {authView === 'signin' ? (
             <>
               <SignInForm />
               <p className="mt-4 text-center text-gray-600">
-                Don't have an account?{' '}
+                Don&apos;t have an account?{' '}
                 <button
                   onClick={() => setAuthView('signup')}
                   className="text-blue-600 hover:text-blue-800"
@@ -151,7 +159,18 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       <header className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">GhostChat</h1>
+          <div className="flex items-center space-x-4">
+            <h1 className="text-2xl font-bold text-gray-900">GhostChat</h1>
+            <div className="flex items-center space-x-2">
+              <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">v1.0</span>
+              <Link
+                href="/v2"
+                className="px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full hover:bg-green-200 transition-colors"
+              >
+                🚀 Try v2.0 Local-First
+              </Link>
+            </div>
+          </div>
           <button
             onClick={() => signOut()}
             className="text-gray-600 hover:text-gray-900"

@@ -1,20 +1,47 @@
 {
-  "name": "ghostchat",
-  "version": "0.1.0",
-  "private": true,
+  "name": "ghostchat-v2-sovereign-aga",
+  "version": "2.0.0",
+  "private": false,
+  "description": "GhostChat v2.0 - Local-First Sovereign AGA Chat Experience with Privacy Controls",
+  "keywords": [
+    "ai",
+    "chat",
+    "local-first",
+    "privacy",
+    "offline",
+    "indexeddb",
+    "nextjs",
+    "openai",
+    "sovereign-aga",
+    "template"
+  ],
+  "author": "GodsIMiJ AI Solutions",
+  "license": "FPU-1.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GodsIMiJ1/ghostchat-nextjs-supabase-ai.git"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "export:data": "echo 'Use the built-in export feature in the app interface'"
   },
   "dependencies": {
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/supabase-js": "^2.49.8",
+    "nanoid": "^5.1.5",
     "next": "15.1.8",
     "openai": "^4.103.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "zustand": "^4.5.7"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -1,14 +1,23 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthContext';
 import ChatWindow from '@/components/ChatWindow';
 import Link from 'next/link';
 
-export default function ChatPage({ params }: { params: { id: string } }) {
+export default function ChatPage({ params }: { params: Promise<{ id: string }> }) {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const [chatId, setChatId] = useState<string>('');
+
+  useEffect(() => {
+    const getParams = async () => {
+      const resolvedParams = await params;
+      setChatId(resolvedParams.id);
+    };
+    getParams();
+  }, [params]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -54,7 +63,7 @@ export default function ChatPage({ params }: { params: { id: string } }) {
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white shadow rounded-lg overflow-hidden h-[calc(100vh-12rem)]">
-          <ChatWindow chatId={params.id} />
+          <ChatWindow chatId={chatId} />
         </div>
       </main>
 

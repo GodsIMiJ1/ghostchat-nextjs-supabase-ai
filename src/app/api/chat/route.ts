@@ -1,78 +1,74 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { generateChatCompletion } from '@/lib/openai';
-import { supabase } from '@/lib/supabaseClient';
-import { cookies } from 'next/headers';
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 export async function POST(request: NextRequest) {
   try {
-    const { messages, chatId } = await request.json();
+    const { messages, model = 'gpt-3.5-turbo' } = await request.json();
 
-    // Verify authentication
-    const cookieStore = cookies();
-    const supabaseToken = cookieStore.get('sb-access-token')?.value;
-    
-    if (!supabaseToken) {
+    if (!messages || !Array.isArray(messages)) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
+        { error: 'Messages array is required' },
+        { status: 400 }
       );
     }
 
-    // Create Supabase client with user's token
-    const supabaseClient = supabase;
-    
-    // Verify chat ownership
-    const { data: userData, error: userError } = await supabaseClient.auth.getUser();
-    
-    if (userError || !userData.user) {
+    if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
-    const { data: chatData, error: chatError } = await supabaseClient
-      .from('chats')
-      .select('*')
-      .eq('id', chatId)
-      .eq('user_id', userData.user.id)
-      .single();
-
-    if (chatError || !chatData) {
-      return NextResponse.json(
-        { error: 'Chat not found or access denied' },
-        { status: 403 }
-      );
-    }
-
-    // Generate AI response
-    const aiResponse = await generateChatCompletion(messages);
-
-    // Save AI response to database
-    const { error: insertError } = await supabaseClient
-      .from('messages')
-      .insert([
-        {
-          chat_id: chatId,
-          role: 'assistant',
-          content: aiResponse || 'I apologize, but I was unable to generate a response.',
-          created_at: new Date().toISOString(),
-        },
-      ]);
-
-    if (insertError) {
-      console.error('Error inserting AI response:', insertError);
-      return NextResponse.json(
-        { error: 'Failed to save AI response' },
+        { error: 'OpenAI API key not configured' },
         { status: 500 }
       );
     }
 
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Error in chat API route:', error);
+    const completion = await openai.chat.completions.create({
+      model,
+      messages: messages.map((msg: { role: string; content: string }) => ({
+        role: msg.role as 'system' | 'user' | 'assistant',
+        content: msg.content,
+      })),
+      temperature: 0.7,
+      max_tokens: 1000,
+    });
+
+    const content = completion.choices[0]?.message?.content;
+
+    if (!content) {
+      return NextResponse.json(
+        { error: 'No response generated' },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      content,
+      model,
+      usage: completion.usage,
+    });
+
+  } catch (error: unknown) {
+    console.error('OpenAI API error:', error);
+
+    const errorObj = error as { code?: string };
+
+    if (errorObj.code === 'insufficient_quota') {
+      return NextResponse.json(
+        { error: 'OpenAI API quota exceeded. Please check your billing.' },
+        { status: 429 }
+      );
+    }
+
+    if (errorObj.code === 'invalid_api_key') {
+      return NextResponse.json(
+        { error: 'Invalid OpenAI API key' },
+        { status: 401 }
+      );
+    }
+
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to generate response' },
       { status: 500 }
     );
   }
