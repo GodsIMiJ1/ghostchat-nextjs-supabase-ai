@@ -6,6 +6,11 @@
 ![NODE Seal](public/NODE.svg)
 
 A production-ready, open-source AI chat template using Next.js, Supabase, and OpenAI—clean, documented, and NODE-sealed.
+## 🚀 GhostChat v2.0 — Sovereign AGA Demo
+
+[![GhostChat v2.0 Demo](./assets/ghostchat-demo-thumb.png)](https://app.supademo.com/demo/cmfh9szs1cvy239ozucrz7mli?utm_source=link)
+
+*Click the image to launch the full interactive demo on Supademo.*
 
 ## 🔥 Features
 
